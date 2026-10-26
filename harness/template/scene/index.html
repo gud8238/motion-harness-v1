@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <!-- 라이브러리: 모든 장면이 공유 (순서 유지) -->
+    <script src="assets/lib/gsap.min.js"></script>
+    <script src="assets/lib/CustomEase.min.js"></script>
+    <script src="assets/lib/three.min.js"></script>
+    <script src="assets/lib/mh.js"></script>
+    <script src="assets/lib/mh-three.js"></script>
+    <script>
+      // ── 스타일 DNA (work/DNA.md 의 '적용값'을 그대로) ── 장면들은 window.DNA 만 읽는다. 장면 안에서 새 색·곡선을 만들지 않는다.
+      window.DNA = {
+        bg: "#F2F1EC", paper: "#FFFFFF", ink: "#111111", accent: "#E8442E", muted: "#BDBAB2", note: "#666666",
+        ease: [0.7, 0, 0.2, 1],   // 주 이징 cubic-bezier → GSAP 에서는 ease: "dna", 캔버스에서는 MH.E.bez(...DNA.ease)
+        bpm: 120,                  // 리듬 그리드 → DNA.B(n) = n박의 초
+      };
+      window.DNA.B = (n) => (n * 60) / window.DNA.bpm;
+      window.DNA.easeFn = MH.E.bez(...window.DNA.ease);
+      MH.gsapEase("dna", ...window.DNA.ease);
+    </script>
+    <style>
+      @font-face { font-family: "Pretendard"; src: url("assets/fonts/PretendardVariable.woff2") format("woff2"); font-weight: 45 920; font-display: block; }
+      /* DNA 색을 CSS 변수로도 (DOM 장면용) — 위 window.DNA 와 같은 값 */
+      :root { --bg: #F2F1EC; --paper: #FFFFFF; --ink: #111111; --accent: #E8442E; --muted: #BDBAB2; --note: #666666; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+      #root { position: relative; width: 100%; height: 100%; font-family: "Pretendard", sans-serif; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="1" data-width="1920" data-height="1080">
+      <!-- 장면 호스트는 scene.mjs add 가 여기에 추가한다 (직접 써도 됨: data-mh-title/note/key 는 스토리보드용) -->
+      <!-- mh:scenes -->
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

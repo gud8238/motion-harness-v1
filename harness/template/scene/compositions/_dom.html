@@ -1,0 +1,21 @@
+<template>
+  <!-- DOM 장면: 타이포·레이아웃·카드·UI 모션. GSAP 타임라인으로 움직인다 -->
+  <style>
+    @font-face { font-family: "Pretendard"; src: url("assets/fonts/PretendardVariable.woff2") format("woff2"); font-weight: 45 920; font-display: block; }
+    #__ID__ { position: absolute; inset: 0; background: var(--bg); font-family: "Pretendard", sans-serif; color: var(--ink); }
+    #__ID__-title { position: absolute; left: 96px; top: 420px; font-size: 140px; font-weight: 800; letter-spacing: -0.02em; overflow: hidden; }
+    #__ID__-title span { display: inline-block; }
+  </style>
+  <div id="__ID__" data-composition-id="__ID__" data-width="__W__" data-height="__H__">
+    <div id="__ID__-title"><span id="__ID__-w1">제목</span></div>
+  </div>
+  <script>
+    (function () {
+      const D = window.DNA, B = D.B;
+      const tl = gsap.timeline({ paused: true });
+      // 시작 상태는 fromTo 로 (from 금지). 시간은 절대 초(B(n))로. 이징은 "dna"
+      tl.fromTo("#__ID__-w1", { yPercent: 110 }, { yPercent: 0, duration: B(1), ease: "dna" }, 0.1);
+      window.__timelines["__ID__"] = tl;
+    })();
+  </script>
+</template>

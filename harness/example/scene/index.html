@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <!-- 라이브러리: 모든 장면이 공유 (순서 유지) -->
+    <script src="assets/lib/gsap.min.js"></script>
+    <script src="assets/lib/CustomEase.min.js"></script>
+    <script src="assets/lib/three.min.js"></script>
+    <script src="assets/lib/mh.js"></script>
+    <script src="assets/lib/mh-three.js"></script>
+    <script>
+      // ── 스타일 DNA (work/DNA.md 의 '적용값'을 그대로) ── 장면들은 window.DNA 만 읽는다. 장면 안에서 새 색·곡선을 만들지 않는다.
+      window.DNA = {
+        bg: "#EAE9E5", paper: "#FFFFFF", ink: "#111111", accent: "#E30613", muted: "#CFCEC9", note: "#555555", grid: "#CFCEC9",
+        ease: [0.7, 0, 0.2, 1],   // 주 이징 cubic-bezier → GSAP 에서는 ease: "dna", 캔버스에서는 MH.E.bez(...DNA.ease)
+        bpm: 120,                  // 리듬 그리드 → DNA.B(n) = n박의 초
+      };
+      window.DNA.B = (n) => (n * 60) / window.DNA.bpm;
+      window.DNA.easeFn = MH.E.bez(...window.DNA.ease);
+      MH.gsapEase("dna", ...window.DNA.ease);
+    </script>
+    <style>
+      @font-face { font-family: "Pretendard"; src: url("assets/fonts/PretendardVariable.woff2") format("woff2"); font-weight: 45 920; font-display: block; }
+      /* DNA 색을 CSS 변수로도 (DOM 장면용) — 위 window.DNA 와 같은 값 */
+      :root { --bg: #EAE9E5; --paper: #FFFFFF; --ink: #111111; --accent: #E30613; --muted: #CFCEC9; --note: #555555; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+      #root { position: relative; width: 100%; height: 100%; font-family: "Pretendard", sans-serif; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="12" data-width="1920" data-height="1080">
+      <!-- 장면 호스트는 scene.mjs add 가 여기에 추가한다 (직접 써도 됨: data-mh-title/note/key 는 스토리보드용) -->
+      <div id="s1" data-composition-id="s1" data-composition-src="compositions/s1.html" data-start="0" data-duration="4" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080" data-mh-kind="dom" data-mh-title="선 → 제목" data-mh-note="빨간 선이 화면을 가르고 제목이 기준선 아래에서 올라옴 (S1)" data-mh-key="2.6"></div>
+      <div id="s2" data-composition-id="s2" data-composition-src="compositions/s2.html" data-start="4" data-duration="4" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080" data-mh-kind="canvas" data-mh-title="규칙 1 — 정면" data-mh-note="숫자 1이 4단계 상승, 종이 카드 와이프 + 정면 사진 (S2)" data-mh-key="2.5"></div>
+      <div id="s3" data-composition-id="s3" data-composition-src="compositions/s3.html" data-start="8" data-duration="4" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080" data-mh-kind="three" data-mh-title="세 방향 — 3D 턴테이블" data-mh-note="멀티뷰 사진 3장으로 0°→90° 회전, 카메라 살짝 접근" data-mh-key="2.8"></div>
+      <audio id="mh-mix" class="clip" src="assets/audio/mix.wav" data-start="0" data-duration="12" data-track-index="9" data-volume="1"></audio>
+      <!-- mh:scenes -->
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

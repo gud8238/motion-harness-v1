@@ -1,0 +1,30 @@
+<template>
+  <!-- 캔버스 장면: 절차적 그래픽(그리드·선 드로잉·질감·하프톤·픽셀·데이터), 사진 배경 제거·합성. MH 런타임 사용 -->
+  <style>
+    #__ID__ { position: absolute; inset: 0; }
+    #__ID__-cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  </style>
+  <div id="__ID__" data-composition-id="__ID__" data-width="__W__" data-height="__H__">
+    <canvas id="__ID__-cv" width="__W__" height="__H__"></canvas>
+  </div>
+  <script>
+    (function () {
+      const { E, tween, kf, seg, clamp, lerp, txt, txtIn, img, IMG } = MH;
+      const D = window.DNA, B = D.B, ez = D.easeFn, DUR = __DUR__;
+      const { ctx, W, H } = MH.stage("__ID__-cv");
+
+      function draw(t) {                       // t = 이 장면의 로컬 초. 순수 함수로.
+        MH.clear(ctx, D.bg);
+        txtIn(ctx, "캔버스 장면", 96, H / 2, seg(t, 0.1, 0.1 + B(1)), { size: 120, weight: 800, color: D.ink });
+        // if (IMG.hero) img(ctx, "hero", W * 0.7, H / 2, 700, 800);
+      }
+
+      const tl = gsap.timeline({ paused: true });
+      // 사진: 단색 배경 제품 사진은 cutout:true (가장자리 플러드필). 경로는 assets/ 기준
+      // window.__hf = window.__hf || {}; window.__hf.buildReady = window.__hf.buildReady || {};
+      // window.__hf.buildReady["__ID__-img"] = MH.load({ hero: { src: "assets/source/front.jpg", cutout: true, tol: 20 } }).then(() => draw(tl.time()));
+      MH.drive(tl, DUR, draw);
+      window.__timelines["__ID__"] = tl;
+    })();
+  </script>
+</template>

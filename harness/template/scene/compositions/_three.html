@@ -1,0 +1,43 @@
+<template>
+  <!-- three.js 장면: 멀티뷰 사진 턴테이블, 공간 속 사진 카드, 깊이 있는 카메라 무브, 파티클. MH3 런타임 사용 -->
+  <style>
+    @font-face { font-family: "Pretendard"; src: url("assets/fonts/PretendardVariable.woff2") format("woff2"); font-weight: 45 920; font-display: block; }
+    #__ID__ { position: absolute; inset: 0; }
+    #__ID__-cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+    #__ID__-cap { position: absolute; left: 96px; top: 140px; font: 700 64px "Pretendard", sans-serif; color: var(--ink); }
+  </style>
+  <div id="__ID__" data-composition-id="__ID__" data-width="__W__" data-height="__H__">
+    <canvas id="__ID__-cv" width="__W__" height="__H__"></canvas>
+    <div id="__ID__-cap">3D 장면</div>
+  </div>
+  <script>
+    (function () {
+      const D = window.DNA, B = D.B, DUR = __DUR__;
+      const s = MH3.stage("__ID__-cv", { bg: D.bg, fov: 30 });
+      MH3.lights(s.scene);
+      MH3.contactShadow(s.scene, { r: 1.1, opacity: 0.3 });
+      let tt = null;                           // 턴테이블 (사진이 로드된 뒤 생성)
+
+      function draw(t) {                       // t = 로컬 초. 오브젝트·카메라를 t로 계산 후 render
+        if (tt) tt.set(MH.kf(t, [[0, 0], [DUR * 0.45, 45, D.easeFn], [DUR * 0.9, 90, D.easeFn]]));
+        MH3.orbit(s.camera, { target: [0, 1.1, 0], radius: 7.2 - 1.0 * MH.E.inOut(t / DUR), height: 0.3, angle: -8 + 16 * (t / DUR) });
+        s.render();
+      }
+
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#__ID__-cap", { yPercent: 60, opacity: 0 }, { yPercent: 0, opacity: 1, duration: B(1), ease: "dna" }, 0.2);
+      window.__hf = window.__hf || {}; window.__hf.buildReady = window.__hf.buildReady || {};
+      // 멀티뷰 사진 → 턴테이블. angle = 촬영 각도(도). 배경이 단색이면 cutout:true
+      window.__hf.buildReady["__ID__-img"] = MH.load({
+        // front: { src: "assets/source/front.jpg", cutout: true, tol: 18 },
+        // side: { src: "assets/source/side.jpg", cutout: true, tol: 18 },
+      }).then((IMG) => {
+        const views = [["front", 0], ["tq", 45], ["side", 90]].filter(([k]) => IMG[k]).map(([k, a]) => ({ img: IMG[k], angle: a }));
+        if (views.length) { tt = MH3.turntable(views, { h: 2.3 }); s.scene.add(tt.group); }
+        draw(tl.time());
+      });
+      MH.drive(tl, DUR, draw);
+      window.__timelines["__ID__"] = tl;
+    })();
+  </script>
+</template>
