@@ -30,7 +30,7 @@ claude plugin install motion-harness@motion-harness
 |---|---|
 | `/motion-harness:mv-new 모션1` | `모션1/` 생성 — `source/`(이미지·음악) `ref/`(레퍼런스) `brief.md`(주제·내용·색) |
 | `/motion-harness:mv-refs 모션1` | 레퍼런스가 없을 때: 주제·이미지에 맞는 후보 4~6개를 영상 재생 페이지로 추천 |
-| `/motion-harness:mv-plan 모션1` | 레퍼런스 측정 → 스타일 DNA → 장면 코드 → 스토리보드 → **검토 요청** ("바로 만들어"를 붙이면 생략) |
+| `/motion-harness:mv-plan 모션1` | 레퍼런스 측정 → **소스 점검**(부족한 이미지가 있으면 목록·생성 프롬프트를 주고 "이미지 추가 완료"를 기다림) → 스타일 DNA → 장면 코드 → 스토리보드 → **검토 요청** ("바로 만들어"를 붙이면 기다리지 않음) |
 | `/motion-harness:mv-make 모션1` | 렌더·검수 → `모션1/out/모션1.mp4`. 수정: `/motion-harness:mv-make 모션1 2번 장면 더 빠르게` |
 
 자연어로 "모션1 이 레퍼런스처럼 만들어줘"라고 해도 mv-plan 이 동작합니다.
@@ -39,9 +39,10 @@ claude plugin install motion-harness@motion-harness
 
 1. **측정** — `analyze-ref` 가 레퍼런스를 숫자와 카드 1장으로: 컷·평균 샷·움직임 곡선, 팔레트 HEX·강조색, **질감**(노이즈 세기, 그레인이 움직이는지/종이처럼 고정인지, 그라데이션 방향·세기, 비네트), 템포, 원본 해상도 질감 확대, 움직임 피크 연속 프레임.
 2. **스타일 DNA** — 매번 같은 11개 항목(구도·색·질감·타이포·모션·리듬·전환·카메라·정보장치·사운드·소스처리)을 측정값으로 채우고 항목마다 채택/변형/제외. 반영률 8/10 미만이면 다시.
-3. **시그니처 무브** — 그 레퍼런스다운 동작 2~5개를 모두 장면에 배정.
-4. **주 레퍼런스 1개** — 여러 개를 주면 하나가 기준, 나머지는 지정한 항목만.
-5. **색은 고정 아님** — 기본은 레퍼런스 팔레트, brief 의 "색 지정"에 적으면(예: 배경 남색 #1B2A4A) 그것이 우선.
+3. **소스 점검** — 레퍼런스 화면을 이루는 요소(배경·캐릭터 포즈·오브젝트·그래픽)를 내 소스와 맞춰 보고, 코드로는 느낌이 살지 않는 이미지만 `work/ASSETS.md` 로 요청 (파일 이름·규격·첨부할 레퍼런스 프레임·영문 생성 프롬프트). 다른 AI 도구로 만들어 `source/` 에 넣으면 그것으로 계획.
+4. **시그니처 무브** — 그 레퍼런스다운 동작 2~5개를 모두 장면에 배정.
+5. **주 레퍼런스 1개** — 여러 개를 주면 하나가 기준, 나머지는 지정한 항목만.
+6. **색은 고정 아님** — 기본은 레퍼런스 팔레트, brief 의 "색 지정"에 적으면(예: 배경 남색 #1B2A4A) 그것이 우선.
 
 ## 구성
 
@@ -52,7 +53,7 @@ harness/
   GUIDE.md        유일한 기준 문서 (순서·DNA 틀·엔진 API·사운드·검수)
   runtime/        mh.js (캔버스 도구) · mh-three.js (three.js 도구)
   template/       HyperFrames 프로젝트 · 장면 템플릿(dom/canvas/three)
-  tools/          setup · new · refs · analyze-ref · scene · board · audio · tts · compare · make
+  tools/          setup · new · refs · analyze-ref · assets · scene · board · audio · tts · compare · make
   example/        완성 예시 (스위스 그리드 DNA + 로봇 멀티뷰 → 12초)
 ```
 
