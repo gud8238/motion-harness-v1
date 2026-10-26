@@ -1,4 +1,5 @@
 // 제작: 오디오 믹스 → HyperFrames 검사 → 렌더 → 검수(시트·검은 화면·빈 화면·LUFS·포스터·자막)
+//   node make.mjs .                → (지금 연 폴더가 프로젝트) out/<폴더이름>.mp4
 //   node make.mjs 모션1            → out/모션1.mp4, out/poster.jpg, (자막 있으면) out/모션1.srt, work/qc.jpg, work/render.json
 //   node make.mjs 모션1 --draft    → out/draft.mp4 (빠른 확인용, 15fps 저화질)
 //   node make.mjs 모션1 --check    → 검사만 (렌더 안 함)
@@ -14,7 +15,8 @@ fs.mkdirSync(outDir, { recursive: true });
 const t0 = Date.now(), sec = () => ((Date.now() - t0) / 1000).toFixed(0) + 's';
 
 // 0) source → scene/assets/source 동기화 (바뀐 파일만)
-for (const f of fs.readdirSync(path.join(proj, 'source'))) {
+fs.mkdirSync(path.join(sceneDir, 'assets', 'source'), { recursive: true });
+for (const f of fs.existsSync(path.join(proj, 'source')) ? fs.readdirSync(path.join(proj, 'source')) : []) {
   const s = path.join(proj, 'source', f), d = path.join(sceneDir, 'assets', 'source', f);
   if (fs.statSync(s).isFile() && (!fs.existsSync(d) || fs.statSync(d).mtimeMs < fs.statSync(s).mtimeMs)) fs.copyFileSync(s, d);
 }

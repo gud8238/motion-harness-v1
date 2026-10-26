@@ -10,7 +10,7 @@ export const PLUGIN = path.resolve(HARNESS, '..');
 // 설치물(node_modules, 라이브러리, 폰트)은 플러그인 업데이트에도 남도록 사용자 홈에 둔다
 export const DATA = process.env.MH_DATA || path.join(os.homedir(), '.motion-harness');
 export const LIB = path.join(DATA, 'library');
-export const ROOT = process.cwd();                                                          // 프로젝트들이 생기는 작업 폴더
+export const ROOT = process.cwd();                                                          // Claude Code 로 연 폴더 (보통 이 폴더 자체가 프로젝트)
 export const CONFIG = JSON.parse(fs.readFileSync(path.join(HARNESS, 'config.json'), 'utf8'));
 
 // ---------- 인자 ----------
@@ -28,9 +28,9 @@ export function parseArgs(argv = process.argv.slice(2)) {
 
 export function die(msg, code = 1) { console.error('✖ ' + msg); process.exit(code); }
 
-// 프로젝트 폴더 찾기: 이름(모션1) 또는 경로
+// 프로젝트 폴더 찾기: "." 또는 생략 = 지금 연 폴더 자체(기본), 또는 그 아래 폴더 이름(모션1)·경로
 export function projectDir(name) {
-  if (!name) die('프로젝트 이름이 필요합니다. 예: node harness/tools/xxx.mjs 모션1');
+  if (!name || name === '.') return ROOT;
   const cands = [path.resolve(name)];
   for (const c of cands) if (fs.existsSync(c) && fs.statSync(c).isDirectory()) return c;
   die(`프로젝트 폴더를 찾을 수 없습니다: ${name}`);

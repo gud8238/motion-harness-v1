@@ -19,21 +19,29 @@ claude plugin install motion-harness@motion-harness
 ```
 /motion-harness:mv-setup
 ```
-설치물(Node 패키지·레퍼런스 라이브러리·한글 폰트)은 `~/.motion-harness` 에 들어갑니다 (약 80MB + Chromium).
+설치물(Node 패키지·레퍼런스 라이브러리·한글 폰트)은 `~/.motion-harness` 에 들어갑니다 (약 80MB + Chromium). 모든 영상 프로젝트가 같이 쓰는 도구 저장소라 작업 폴더가 아닌 곳에 설치되는 것이 정상이고, 컴퓨터마다 한 번이면 됩니다.
 업데이트: `claude plugin update motion-harness@motion-harness` 후 `/motion-harness:mv-setup --update`
 
 ## 사용
 
-영상 작업용 폴더(예: `motion_video`)에서 `claude` 실행 후:
+**영상 하나 = 폴더 하나.** 예를 들어 바탕화면에 폴더를 만들고 레퍼런스와 이미지를 미리 넣어 둡니다.
+
+```
+바탕화면/motion-video2/      ← 이 폴더를 Claude Code 로 연다
+  ref/      레퍼런스 mp4 (·이미지·프롬프트)
+  source/   영상에 쓸 이미지 (여러 각도 사진, 음악·녹음도 가능)
+```
 
 | 명령 | 하는 일 |
 |---|---|
-| `/motion-harness:mv-new 모션1` | `모션1/` 생성 — `source/`(이미지·음악) `ref/`(레퍼런스) `brief.md`(주제·내용·색) |
-| `/motion-harness:mv-refs 모션1` | 레퍼런스가 없을 때: 주제·이미지에 맞는 후보 4~6개를 영상 재생 페이지로 추천 |
-| `/motion-harness:mv-plan 모션1` | 레퍼런스 측정 → **소스 점검**(부족한 이미지가 있으면 목록·생성 프롬프트를 주고 "이미지 추가 완료"를 기다림) → 스타일 DNA → 장면 코드 → 스토리보드 → **검토 요청** ("바로 만들어"를 붙이면 기다리지 않음) |
-| `/motion-harness:mv-make 모션1` | 렌더·검수 → `모션1/out/모션1.mp4`. 수정: `/motion-harness:mv-make 모션1 2번 장면 더 빠르게` |
+| `/motion-harness:mv-new` | 지금 폴더를 프로젝트로 준비 — ref/·source/ 확인, `brief.md`·`scene/`·`work/`·`out/` 생성, source 동기화. 세로 영상은 `--size 9:16` (1:1, 4:5 도 가능) |
+| `/motion-harness:mv-refs` | 레퍼런스가 없을 때: 주제·이미지에 맞는 후보 4~6개를 영상 재생 페이지로 추천 |
+| `/motion-harness:mv-plan` | (준비가 안 됐으면 mv-new 를 대신 수행) 레퍼런스 측정 → **소스 점검**(부족한 이미지가 있으면 목록·생성 프롬프트를 주고 "이미지 추가 완료"를 기다림) → 스타일 DNA → 장면 코드 → 스토리보드 → **검토 요청** ("바로 만들어"를 붙이면 기다리지 않음) |
+| `/motion-harness:mv-make` | 렌더·검수 → `out/<폴더이름>.mp4`. 수정: `/motion-harness:mv-make 2번 장면 더 빠르게` |
 
-자연어로 "모션1 이 레퍼런스처럼 만들어줘"라고 해도 mv-plan 이 동작합니다.
+mv-new 는 여러 번 실행해도 안전합니다 — source/ 에 이미지를 추가·교체했으면 다시 실행해 동기화하세요 (mv-plan·mv-make 도 시작할 때 동기화합니다). 자연어로 "이 레퍼런스처럼 만들어줘"라고 해도 mv-plan 이 동작합니다.
+
+**여러 영상을 한 폴더에서 관리하려면** 이름을 붙입니다: `/motion-harness:mv-new 모션1` → `모션1/` 하위 폴더가 프로젝트가 되고, 이후 명령에도 `모션1` 을 붙입니다.
 
 ## 레퍼런스 스타일을 빠짐없이 옮기는 방법
 
@@ -58,7 +66,7 @@ harness/
 ```
 
 ## 참고
-- HyperFrames **커넥터(claude.ai)** 는 호스팅 편집용이라 Claude Code 에서는 영상 생성·렌더가 막혀 있습니다. 이 플러그인은 같은 엔진을 **로컬 CLI** 로 씁니다. 완성 후 직접 손보려면 `모션1/scene` 에서 `npx hyperframes preview`.
+- HyperFrames **커넥터(claude.ai)** 는 호스팅 편집용이라 Claude Code 에서는 영상 생성·렌더가 막혀 있습니다. 이 플러그인은 같은 엔진을 **로컬 CLI** 로 씁니다. 완성 후 직접 손보려면 프로젝트의 `scene/` 폴더에서 `npx hyperframes preview`.
 - HyperFrames 의 배경 제거(`remove-background`)는 **인물 전용 모델**입니다. 제품·사물 사진은 단색 배경에서 찍으면 내장 배경 제거가 동작합니다.
 - 한국어 TTS 는 edge-tts(인터넷 필요). 직접 녹음도 가능.
 
