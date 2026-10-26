@@ -92,8 +92,31 @@ function points(n, seed = 1, o = {}) {
   const r = MH.rng(seed), pos = new Float32Array(n * 3), s = o.spread ?? [8, 4, 8];
   for (let i = 0; i < n; i++) { pos[i * 3] = (r() - .5) * s[0]; pos[i * 3 + 1] = r() * s[1]; pos[i * 3 + 2] = (r() - .5) * s[2]; }
   const geo = new T.BufferGeometry(); geo.setAttribute('position', new T.BufferAttribute(pos, 3));
-  return new T.Points(geo, new T.PointsMaterial({ color: new T.Color(o.color || '#ffffff'), size: o.size ?? 0.03, transparent: true, opacity: o.opacity ?? 0.8, depthWrite: false }));
+  return new T.Points(geo, new T.PointsMaterial({ color: new T.Color(o.color || '#ffffff'), size: o.size ?? 0.03, transparent: true, opacity: o.opacity ?? 0.8, depthWrite: false, map: o.square ? null : dot(), alphaTest: 0.01, blending: o.add ? T.AdditiveBlending : T.NormalBlending }));
+}
+// 둥근 점 텍스처 (부드러운 가장자리) — points 기본값
+let _dot = null;
+function dot() {
+  if (_dot) return _dot;
+  const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d');
+  const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.45, 'rgba(255,255,255,.9)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 64, 64); _dot = new T.CanvasTexture(c); return _dot;
 }
 
-window.MH3 = { THREE: T, stage, lights, tex, photoCard, turntable, contactShadow, floor, textPlane, orbit, points };
+// 빛 번짐 평면 (가산 혼합): 제목·피사체 뒤 후광
+function glow(o = {}) {
+  const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d');
+  const g = x.createRadialGradient(128, 128, 0, 128, 128, 128); g.addColorStop(0, MH.rgba(o.color || '#ffffff', o.opacity ?? 0.6)); g.addColorStop(0.35, MH.rgba(o.color || '#ffffff', (o.opacity ?? 0.6) * 0.3)); g.addColorStop(1, MH.rgba(o.color || '#ffffff', 0));
+  x.fillStyle = g; x.fillRect(0, 0, 256, 256);
+  const m = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: new T.CanvasTexture(c), transparent: true, depthWrite: false, blending: T.AdditiveBlending, toneMapped: false, fog: false }));
+  m.scale.setScalar(o.size ?? 6); return m;
+}
+// 배경 그라데이션 (방사형): scene.background 에 넣는다
+function bgRadial(inner, outer, o = {}) {
+  const c = document.createElement('canvas'); c.width = 512; c.height = 288; const x = c.getContext('2d');
+  const g = x.createRadialGradient(256 * (o.cx ?? 1), 144 * (o.cy ?? 1), 0, 256, 144, 300); g.addColorStop(0, inner); g.addColorStop(1, outer);
+  x.fillStyle = g; x.fillRect(0, 0, 512, 288); return tex(c);
+}
+
+window.MH3 = { THREE: T, stage, lights, tex, photoCard, turntable, contactShadow, floor, textPlane, orbit, points, glow, bgRadial };
 })();

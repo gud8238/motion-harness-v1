@@ -17,7 +17,7 @@
 2.5 **소스 점검** (아래 '소스 점검' 절): 레퍼런스를 재현하는 데 필요한 이미지와 받은 소스를 맞춰 보고, 부족한 것이 있으면 `work/assets.json` → `assets.mjs request P` → `work/ASSETS.md`(용도·규격·생성 프롬프트). **⏸** AskUserQuestion: `이미지 추가 완료` / `일부만 넣고 진행` / `이미지 없이 진행(코드로 대체)`. 답이 오면 `assets.mjs check P` + `new.mjs P`(동기화) 후 새로 들어온 이미지만 확인. 부족한 것이 없으면 "추가 이미지 불필요" 한 줄로 넘어간다. "바로 만들어"면 목록만 보여주고 기다리지 않는다.
 3. **계획** `work/PLAN.md` (아래 틀). 내레이션이 있으면 먼저 `work/narration.json` → `tts.mjs P` (시각이 장면 길이를 정함).
 4. **장면**: `scene.mjs add P <id> <dom|canvas|three> --dur 초 --title … --note …` 로 만들고 `scene/compositions/<id>.html` 을 채운다. DNA 값은 `scene/index.html` 의 `window.DNA` 와 CSS 변수에 한 번만 쓴다.
-5. **스토리보드**: `board.mjs P` → `work/storyboard.png` 보고 한 번 고침.
+5. **스토리보드**: `board.mjs P` → `work/storyboard.png` 를 레퍼런스 `card.png` 와 나란히 보고 **품질 기준**(7절) 미달이면 보강, 한 번 고침.
 6. **⏸ 검토 요청** (사용자가 "바로 만들어"라고 했으면 생략): DNA 표 요약(반영률) · 시그니처→장면 · 장면 표 · storyboard.png 경로 · 자신 없는 점 1개 → 승인/장면 수정/스타일 조정.
 7. **제작**: `work/sound.json` 작성 → `make.mjs P` (오디오→검사→렌더→검수). `work/qc.jpg` 보고 문제가 있으면 한 번 고쳐 재실행.
 8. **납품**: `out/P.mp4` 경로, 길이·해상도, 반영한 DNA 한 줄, 검수 수치(LUFS·문제 구간), 들어봐야 할 것, 약점 1개.
@@ -31,7 +31,7 @@
 - **프롬프트** (`prompt_en` 주, `prompt_ko` 설명): 무엇이 + 어떤 동작/상태 / 구도와 카메라 각도(레퍼런스 프레임과 같게) / DNA 색 HEX / 매체·질감·조명 / 비율 / `no text, no watermark, no logo`. 모든 프롬프트 끝에 **같은 스타일 문구**를 붙여 화풍을 통일. 캐릭터는 "same character as the attached image". 레퍼런스의 캐릭터·로고를 베끼지 않고 "in the style of the attached frame, original design".
 - 이미지가 오면 그 이미지에 맞춰 계획한다. 오지 않은 것은 코드로 대체하고 PLAN 11번에 적는다.
 
-## 3. PLAN.md 틀 (DNA + 장면) — 완성 예시: `<플러그인>/harness/example/` (PLAN.md, dom·canvas·three 장면 각 1개)
+## 3. PLAN.md 틀 (DNA + 장면) — 채운 모습: `<플러그인>/harness/PLAN-example.md` (형식만 참고, 색·스타일은 따라 하지 않는다)
 ```markdown
 # P 계획
 주 레퍼런스: <파일/ID> · 보조: <파일 — 항목 번호만> 또는 없음
@@ -77,7 +77,7 @@
 **MH3 (three.js r159, window.MH3)** — draw(t)마다 오브젝트·카메라를 t로 정하고 `s.render()`
 - `s=MH3.stage(canvasId,{bg,fov,exposure,fog,shadows})` · `MH3.lights(scene,{key,rim,keyI,rimI})` · `MH3.contactShadow(scene,{r,opacity})` · `MH3.floor(scene,{color})`
 - `MH3.turntable([{img,angle},…],{h})` → `.set(각도)` : 여러 각도 사진을 교차시켜 도는 것처럼(±90° 범위, 배경 제거 이미지)
-- `MH3.photoCard(img,{h,margin,color})` · `MH3.textPlane(글,{size,weight,color,height})` · `MH3.orbit(camera,{target,radius,height,angle,fov})` · `MH3.points(n,seed,{spread,size,color})` · `MH3.tex(이미지)`
+- `MH3.photoCard(img,{h,margin,color})` · `MH3.textPlane(글,{size,weight,color,height})` · `MH3.orbit(camera,{target,radius,height,angle,fov})` · `MH3.points(n,seed,{spread,size,color,opacity,add})`(둥근 점, add=가산 혼합) · `MH3.glow({color,size,opacity})` 후광 · `MH3.bgRadial(안,밖)` 방사형 배경 · `MH3.tex(이미지)`
 
 ## 5. 소스 이미지
 - 여러 각도 사진 = 같은 대상의 일관성. 3D 턴테이블, 장면마다 각도 바꾸기, 나란히 소개.
@@ -93,6 +93,13 @@ Claude 는 소리를 들을 수 없다 → LUFS·이벤트 수만 보고하고 �
 
 ## 7. 연출 최소 기준
 처음 3초 안에 훅 · 2~4초마다 새로운 것 + 한 번의 홀드 · 끝은 처음의 변형 · 강조색은 한 가지 의미 · 중요한 것 ≥100px, 글자 ≥28px(1080 기준, DNA가 더 작으면 장식용만) · 글자 유지 시간 ≥ (글자수÷7+1.2)초 · 금지 기본값: 그라데이션 위 가운데 제목, 전부 페이드인, 의미 없는 파티클, 로고만 나오는 엔딩.
+
+**품질 기준 — 레퍼런스와 같은 밀도인가** (스토리보드 단계에서 card.png 와 나란히)
+- 화면 밀도: 한 화면의 요소·레이어 수가 레퍼런스 대표 프레임과 비슷한가 (레퍼런스가 꽉 차 있으면 우리도)
+- 동시 움직임: 주인공 외에 같이 움직이는 것(배경 흐름·입자·UI·미세 흔들림)이 레퍼런스만큼 있는가
+- 깊이: 레퍼런스에 전경·중경·배경 레이어나 패럴랙스가 있으면 우리도 레이어로 나눈다
+- 전환: 장면 사이를 레퍼런스 방식으로 잇는다 (하드컷·페이드는 레퍼런스가 그럴 때만)
+- 미달이면 검토 요청 전에 보강한다. 보강하지 못한 부분은 '자신 없는 점'에 적는다
 
 ## 8. 검수 (make.mjs 결과)
 검사 오류 0 · 검은 화면/내용 없는 구간이 의도된 것인지 · LUFS −14±2 · qc.jpg: 피사체가 작거나 잘림, 글자가 피사체를 가림, 같은 색 위 같은 색 · 시그니처 무브가 실제로 보이는가. 한 번 고치고, 남은 큰 문제는 납품 메시지에 적는다.

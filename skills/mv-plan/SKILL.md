@@ -9,5 +9,5 @@ GUIDE 의 **2. 순서 1~6** 을 수행한다 (2.5 소스 점검 포함). 프로�
 - 가볍게: 레퍼런스는 `analysis.md` + `card.png`, 소스는 `sources.png`(`assets.mjs sheet`) 한 장씩. PLAN.md 하나, 스토리보드 1장. 질문은 처음 한 번.
 - **소스 점검 (2.5)**: 레퍼런스 요소와 소스를 맞춰 보고, 코드로는 레퍼런스 느낌을 살리기 어려운 이미지만 `work/assets.json` → `node "${CLAUDE_PLUGIN_ROOT}/harness/tools/assets.mjs" request <P>` → `work/ASSETS.md`. 채팅에는 표(파일 이름·역할·장면·필수)와 ASSETS.md 경로만 보이고 AskUserQuestion(`이미지 추가 완료` / `일부만 넣고 진행` / `이미지 없이 진행`)으로 멈춘다. 답이 오면 `assets.mjs check <P>` 와 `new.mjs <P>` 후 새 이미지만 확인하고 계속. 필요한 이미지가 없으면 한 줄로 알리고 계속.
 - 장면은 `node "${CLAUDE_PLUGIN_ROOT}/harness/tools/scene.mjs" add <P> <id> <dom|canvas|three> --dur … --title … --note …` → `scene/compositions/<id>.html` 작성. DNA 는 `scene/index.html` 의 `window.DNA`·CSS 변수에.
-- `node "${CLAUDE_PLUGIN_ROOT}/harness/tools/board.mjs" <P>` → storyboard.png 확인 후 한 번 고침.
+- `node "${CLAUDE_PLUGIN_ROOT}/harness/tools/board.mjs" <P>` → storyboard.png 를 레퍼런스 card.png 와 나란히 보고 GUIDE 7절 **품질 기준**(밀도·동시 움직임·깊이·전환) 미달이면 보강, 한 번 고침.
 - 인자나 대화에 "바로 만들어/검토 없이"가 있으면 검토를 건너뛰고 `/motion-harness:mv-make` 절차로 이어간다. 아니면 검토 요청(DNA 반영률 · 시그니처→장면 · 장면 표 · storyboard 경로 · 자신 없는 점 1개)을 보내고 멈춘다. 이 단계에서 make.mjs 는 실행하지 않는다.

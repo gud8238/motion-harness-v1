@@ -1,7 +1,7 @@
 {
   "name": "motion-harness",
   "displayName": "Motion Harness",
-  "version": "0.3.0",
+  "version": "0.3.3",
   "description": "레퍼런스 영상의 스타일을 측정해 스타일 DNA로 옮기고, HyperFrames + three.js 로 모션그래픽 영상을 만드는 하네스 (lemo-opuscar · animate · awesome-opus-5.5-video 통합)",
   "author": { "name": "gud8238" },
   "repository": "https://github.com/gud8238/motion-harness-v1",

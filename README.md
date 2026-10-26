@@ -54,7 +54,7 @@ harness/
   runtime/        mh.js (캔버스 도구) · mh-three.js (three.js 도구)
   template/       HyperFrames 프로젝트 · 장면 템플릿(dom/canvas/three)
   tools/          setup · new · refs · analyze-ref · assets · scene · board · audio · tts · compare · make
-  example/        완성 예시 (스위스 그리드 DNA + 로봇 멀티뷰 → 12초)
+  PLAN-example.md 계획서가 채워진 모습 (형식 참고)
 ```
 
 ## 참고
